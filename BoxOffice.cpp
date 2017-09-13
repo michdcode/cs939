@@ -8,9 +8,6 @@ int main()
 {
 	// Initialize constants and variables.
 	const int ADULT_TICKET_PRICE = 6.00, CHILD_TICKET_PRICE = 3.00;
-	// char oQuote, cQuote;
-	// oQuote = 34;
-	// cQuote = 211;
 	string movieName;
 	int adultTicketsSold, childTicketsSold;
 	float gross, net, distributorPay;
