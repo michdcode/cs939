@@ -10,7 +10,7 @@ int main ()
 	int months=0;
 	string begMonth, endMonth;
 
-	// Open the input file & troubleshoot
+	// Open the input file & determine if it works
 	cout << "Attempting to open input file. \n";
 	inputFile.open("rainfall.txt");
 	if (inputFile) 
