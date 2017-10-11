@@ -7,12 +7,20 @@ using namespace std;
 //Car Class declaration
 class Car
 {   private:
-        int year, speed;
+        int year;
         string make;
+        int speed;
     
     public:
-        // function prototypes
-        Car(int vehicleYear, string vehicleMake); 
+        // constructor
+        Car(double vehicleYear, string vehicleMake)
+        {
+            year = vehicleYear;
+            speed = 0.0;
+            make = vehicleMake;
+        } 
+
+        Car(); // default constructor
         
         // Accessor functions -- inline because they are short
         int getYear()
@@ -32,31 +40,30 @@ class Car
         {   speed = speed - 5; }
 };
 
-// Car Class member function implementation -- Constructor
-Car::Car(int vehicleYear, string vehicleMake)
-{
-    year = vehicleYear;
-    speed = 0.0;
-    make = vehicleMake;
-}
-
 // Client Program 
 int main()
 {
-    Car dadCar(2016, 'Volvo');
+    Car myCar(2016, "Volvo");
     int count = 0;
     // Accelerate, get speed, show speed - repeat 5 times
     while (count < 5)
     {
-        cout << "The current speed is: " << dadCar.setAccelerate() << dadCar.getSpeed() << endl;
+        cout << "The current speed is: ";
+        myCar.setAccelerate();
+        cout << myCar.getSpeed(); 
+        cout << endl;  
         count ++;
     }
-    cout << "Whoa - slow down!";    
+    cout << "Whoa - slow down!\n";    
     // Brake, get speed, show speed - repeat 5 times
     while (count != 0)
     {
-        cout << "The current speed is: " << dadCar.setBrake() << dadCar.getSpeed() << endl;
+        cout << "The current speed is: "; 
+        myCar.setBrake();
+        cout << myCar.getSpeed();
+        cout << endl;
         count --;
     }
     return 0; 
 }
+
