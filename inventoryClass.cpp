@@ -1,6 +1,7 @@
 // Inventory Class - Question 7
 
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 //Inventory Class declaration
@@ -33,10 +34,10 @@ class Inventory
 		int getQuantity()
 		{	return quantity; }
 
-		int getCost()
+		double getCost()
 		{	return cost; }
 
-		int getTotalCost()
+		double getTotalCost()
 		{	return cost * quantity; }
 
 		// Mutator functions
@@ -79,6 +80,7 @@ int main()
 
 	// Create object & Display values:
 	Inventory newItem(uItem, uQuantity, uCost);
+	cout << fixed << showpoint << setprecision(2) << endl; 
 	cout << "\nThe item number is: " << newItem.getItemNumber() << endl;
 	cout << "\nThe quantity is: " << newItem.getQuantity() << endl;
 	cout << "\nThe item cost is: " << newItem.getCost () << endl;
