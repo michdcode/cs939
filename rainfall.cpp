@@ -42,4 +42,4 @@ int main ()
 		cout << "Error opening file.\n";
 	}
 	return 0;
-}
+} 
