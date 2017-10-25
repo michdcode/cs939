@@ -4,12 +4,11 @@
 using namespace std;
 
 // Payroll class declaration
-class PayRoll
-{	private:
+class Payroll
+{	
+	public:
 		double hours;
 		double hourlyRate;
-
-	public:
 		Payroll(double hoursWorked, double payRate) // Constructor with two parameters
 		{	
 			hours = hoursWorked;
