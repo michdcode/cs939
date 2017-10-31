@@ -80,7 +80,10 @@ class Employee
 
 		// Mutator functions definitions - inline because they are shorter
 		void setEmpID(int iEID)
-		{	employeeID = iEID; }
+		{	
+			employeeID = iEID
+			empIdNums.push_back(employeeID); 
+		}
 
 		void setEmpAge(int iEmpAge)
 		{	employeeAge = iEmpAge; }
@@ -93,14 +96,17 @@ class Employee
 
 		void setEmpName(string iEmpName)
 		{	employeeName = iEmpName;	}
+
+		// vector to hold all of the employee ID's
+		vector<int> empIdNums;
 };
 
 // function prototypes for main
 int getChoice();
 void displayMenu();
 void getEmployeeData(Employee &);
-int checkEmployeeID(int);
-int checkDepartmentID(int);
+bool checkEmployeeID(int);
+bool checkDepartmentID(int);
 
 
 
@@ -113,10 +119,10 @@ int main()
 	Department myDeparts[NUM_DEPT];
 
 	// Constants and variables
-	int choice;
 	int empCount = 0;
-	int cID;
-	int cDID;
+	int choice, cID, cDID, tID, tAge, tEDID;
+	double tSal; 
+	string tName;
 
 	cout << fixed << showpoint << setprecision(2); //set formatting for numeric output
 
@@ -182,29 +188,68 @@ int getChoice()
 ************************************************************************/
 void getEmployeeData(Employee &myEmploys[empCount], tID, tAge, tEDID, tSal, tName)
 {
+	bool Evalid = false, EDvalid = false;
+	tAge = 0;
+	tSal = 0; 
+	tName = ""
+
 	if (empCount > 6) 
 	{
 		cout << "The array is full, you can not add any more Employees.";
 	}
 	else 
 	{
-		cout << "\nEnter the Employee's ID number: ";
-		cin >> tID;
-		checkEmployeeID(tID); // will ultimately return a valid ID number
-		cout << "\nEnter the Employee's age: ";
-		cin >> tAge;
-		cout << "\nEnter the employee's Department ID: ";
-		cin >> tEDID;
-		checkDepartmentID(teDID); // will ultimately return a valid Dept
-		cout >> "\nEnter the employee's salary: $ "; 
-		cin >> tSal;
-		cout >> "Enter the employee's name: ";
-		cin.get();
-		getline(cin, tName);
-		myEmploys[empCount](tid, tAge, tEDID, tSal, tName);
+		// Get a valid Employee ID number
+		while (Evalid == false) 
+		{
+			cout << "\nEnter the Employee's ID number: ";
+			cin >> tID;
+			checkEmployeeID(tID);
+		} 
+
+		// Get a valid employee age
+		while (tAge < 18)
+		{
+			cout << "\nEnter the Employee's age: ";
+			cin >> tAge;
+			if (tAge < 18)
+				cout << "Employees must be over 18 years old.";
+		}
+
+		// Get a valid Department ID		
+		while (EDvalid == false)
+		{
+			cout << "\nEnter the employee's Department ID: ";
+			cin >> tEDID;
+			checkDepartmentID(tEDID);
+		}
+
+		// Get a valid salary
+		while (tSal == 0)
+		{
+			cout >> "\nEnter the employee's salary: $ "; 
+			cin >> tSal;
+			if (tSal == 0)
+				cout << "\nThe salary cannot be 0.";
+		}
+		
+		// Get a valid name
+		while (tName = "")
+		{
+			cout >> "\nEnter the employee's name: ";
+			cin.get();
+			getline(cin, tName);
+			if (tName == "") 
+				cout << "\nThe name cannot contain an empty string.";
+		}
+
+		// add employee to employee array
 		// if the line above doesn't create a new employee object in the array 
 		// at the specified location, try setEmpID(myEmploys[empCount]) - p576
 		// or myEmployes[empCount].setEmpID(tid)
+		myEmploys[empCount](tid, tAge, tEDID, tSal, tName);
+		
+		// increase count of employees in array
 		empCount ++;
 	}
 }
@@ -214,29 +259,45 @@ void getEmployeeData(Employee &myEmploys[empCount], tID, tAge, tEDID, tSal, tNam
 *	This function makes sure employee ID's are unique					*
 ************************************************************************/
 
-int checkEmployeeID(int cID);
-
+bool checkEmployeeID(int cID);
+{
+	int numcID;
+	int local;
+	numcID = empIdNums.size();
+	for (int i = 0; i < numcID; i++)
+	{
+		local = empIdNums.at(i);
+		if (local == cID)
+			{
+				cout << "\nThat employee ID is already in use. Please try again.";
+				return false
+			}
+	}
+	Evalid = true; 
+	return true; // ?return Evalid which is equal to a bool
+}
 
 /************************************************************************
 *						checkDepartmentID								*
 *	This function makes sure the Department ID exists.					*
 ************************************************************************/
 
-int checkDepartmentID(int cDID)
+bool checkDepartmentID(int cDID)
 {
 	int numEID;
 	int local; 
 	numEID = deptIdNums.size();
-	for (int i = 0; i < num; ++i)
+	for (int i = 0; i < numEID; i++)
 	{
 		local = deptIdNums.at(i);
 		if (local == cDID)
-			return cDID// if the ID exists already return it & continue
+			{
+				EDvalid = true;
+				return true; 
+			}
 	}
-
-	// need to do a function call to get a valid employee ID
-
-	 
+	cout << "\nThat department does not exist. Please try again.";
+	return false; // ?return ED valid which is equal to a bool
 }
 
 
