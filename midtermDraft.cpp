@@ -30,7 +30,13 @@ class Department
 		int getDepartmentID()
 		{ 	return DepartmentID; }
 
-		// Mutator functions definitions - inline because they are shorter
+		string getDepartmentName()
+		{	return Departmentname;	}
+
+		string getDepartmentHeadName()
+		{	return DepartmentHeadName;	}
+
+		// Mutator functions definitions - inline because they are short
 		void setDeptID(int iID)
 		{	DepartmentID = iID;	}
 
@@ -68,9 +74,21 @@ class Employee
 			setEmpSal(userEmpSalary);
 			setEmpName(userEmpName);
 		}
-		// // Accessor functions
-		// int getItemNumber()
-		// { 	return itemNumber; }
+		// Accessor functions
+		int getEmpID()
+		{ 	return employeeID; }
+
+		int getEmployeeAge()
+		{ 	return employeeAge; }
+
+		int getEmployeeDepartmentID()
+		{ 	return employeeDepartmentID; }
+
+		double getEmployeeSalary()
+		{	return employeeSalary;	}
+
+		string getEmployeeName()
+		{	return employeeName;	}
 
 		// Mutator functions definitions - inline because they are shorter
 		void setEmpID(int iEID)
@@ -412,6 +430,13 @@ void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstre
 ************************************************************************/
 void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps, int ndept)
 {
+	// initialize a few variables
+	int dept1 = -1, dept2 = -1, dept3 = -1, j = 1;
+	double sal1 = 0.0, sal2 = 0.0, sal3 = 0.0;
+	const int PAIRS = 7;
+	double deptSalaryPairs[PAIRS][PAIRS];
+
+	// Display Employee Array
 	if (nemps == 0)
 		cout << "\nThe Employee Array is empty.";
 	else
@@ -420,33 +445,57 @@ void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps,
 		for (int i = 0; i < nemps; i++)
 			{
 				cout << "\nEmployee Array item number " << i << endl;
-				cout << "Employee ID number: " << empArray[i].employeeID << endl;
-				cout << "Employee Age: " << empArray[i].employeeAge << endl;
-				cout << "Employee Department ID: " << empArray[i].employeeDepartmentID << endl;
-				cout << "Employee Salary: " << empArray[i].employeeSalary << endl;
-				cout << "Employee Name: " << empArray[i].employeeName << endl;
+				cout << "Employee ID number: " << empArray[i].getEmpID() << endl;
+				cout << "Employee Age: " << empArray[i].getEmployeeAge() << endl;
+				cout << "Employee Department ID: " << empArray[i].getEmployeeDepartmentID() << endl;
+				cout << "Employee Salary: " << empArray[i].getEmployeeSalary() << endl;
+				cout << "Employee Name: " << empArray[i].getEmployeeName() << endl;
 			}
 	}
+	// Display Department Array 
 	if (ndept == 0) 
 		cout << "\nThe Department Array is empty.";
 	else 
 	{
 		cout << "\nHere is the content of the Departments Array";
-		for (int i = 0; i < ndept; i++)
+		for (i = 0; i < ndept; i++)
 			{
 				cout << "\nDepartment Array item number " << i << endl;
-				cout << "Department ID number: " << depArray[i].DepartmentID << endl;
-				cout << "Department Name: " << depArray[i].Departmentname << endl;
-				cout << "Department Head Name: " << depArray[i].DepartmentHeadName << endl;
-			}
-		i = 0;
-		double totalSal;
-		for (int i = 0; i < ndept; i++)
-			
-
+				cout << "Department ID number: " << depArray[i].getDepartmentID() << endl;
+				cout << "Department Name: " << depArray[i].getDepartmentName() << endl;
+				cout << "Department Head Name: " << depArray[i].getDepartmentHeadName() << endl;
+			}	
 	}
-	
+	// Gather department information
+	for (i = 0; i < ndept; i++)
+		{
+			dept[j] = depArray[i].getDepartmentID; 
+			j++
+		}
+	// Put employee department and salary into pairs
+	j = 0; 
+	for (i = 0; i < nemps; i++)
+		{
+			deptSalaryPairs[i][j] = empArray[i].getEmployeeDepartmentID();
+			deptSalaryPairs[i][j + 1] = empArray[i]getEmployeeSalary();
+			j++; 
+		}
+	// Loop through employee array pairs, and total salaries by department
+	for (i = 0; i < nemps; i ++)
+		{
+			if (dept1 == deptSalaryPairs[i][j])
+				sal1 = sal1 + deptSalaryPairs[i][j + 1];
+			else if (dept2 == deptSalaryPairs[i][j])
+				sal2 = sal2 + deptSalaryPairs[i][j + 1];
+			else
+				sal3 = sal3 + deptSalaryPairs[i][j + 1];
+		}
+	// Display salaries by department
+	cout << "\nFor department number " << dept1 << " The total salaries are: $" << sal1;
+	cout << "\nFor department number " << dept2 << " The total salaries are: $" << sal2;
+	cout << "\nFor department number " << dept3 << " The total salaries are: $" << sal3;
 }
+
 
 
 
