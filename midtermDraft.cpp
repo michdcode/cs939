@@ -35,7 +35,7 @@ class Department
 		void setDeptID(int iID)
 		{	
 			DepartmentID = iID;
-			deptIdNums.push_back(DepartmentID);
+			
 		}
 
 		void setDeptName(string iDeptName)
@@ -44,8 +44,6 @@ class Department
 		void setCost(string iDeptHead)
 		{	DepartmentHeadName = iDeptHead; }
 
-		// vector to hold all of the department ID's
-		vector<int> deptIdNums;
 };
 
 
@@ -69,8 +67,6 @@ class Employee
 		Employee(int userEmpID, int userEmpAge, int userEmpDeptID, double userEmpSalary, string userEmpName)
 		{
 			setEmpID(userEmpID);	// Constants and variables
-	int deptCount = 0;
-	int empCount = 0;
 	int choice, tID, tAge, tEDID, tDID, tDN;
 	double tSal; 
 
@@ -87,7 +83,7 @@ class Employee
 		void setEmpID(int iEID)
 		{	
 			employeeID = iEID
-			empIdNums.push_back(employeeID); 
+			
 		}
 
 		void setEmpAge(int iEmpAge)
@@ -97,22 +93,20 @@ class Employee
 		{	employeeDepartmentID = iEmpDepID; }
 
 		void setEmpSal(double iEmpSal)
-		{	employeeSalary = iEmpSal;	}
+		{	employeeSalary = iEmpSal;	}	
 
 		void setEmpName(string iEmpName)
 		{	employeeName = iEmpName;	}
 
-		// vector to hold all of the employee ID's
-		vector<int> empIdNums;
 };
 
 // function prototypes for main
 int getChoice();
 void displayMenu();
-void getEmployeeData(int&, int&, int&, double&, string&);
-void getDepartmentData(int&, string&, string&, int);
-bool checkEmployeeID(int&, bool&);
-bool checkDepartmentID(int&);
+void getEmployeeData(int&, int&, int&, double&, string&, int, vector&, vector);
+void getDepartmentData(int&, string&, string&, int, vector&);
+bool checkEmployeeID(int&, bool&, vector);
+bool checkDepartmentID(int&, bool&, vector);
 void writeDeptAndEmpArraysToFile(Department, Employee, ofstream&, ofstream&, int, int);
 void readDeptAndEmpArraysFromFile(Department, Employee, ifstream&, ifstream&, string, string, int, int);
 
@@ -125,14 +119,19 @@ int main()
 	const int NUM_DEPT = 3;
 	Employee myEmploys[NUM_EMPS];
 	Department myDeparts[NUM_DEPT];
+	vector<int> deptIdNums; // vector to hold all of the department ID's
+	// vector to hold all of the employee ID's & employee salaries
+	vector<int> empIdNums;
+	vector<int> salaryData;
 
+	int tDID, tID, tAge, tEDID;
+	double tSal;
 	string tName, tDN, tDHN, dDI, eDI;
 	ofstream deptArrayFile;
 	ofstream empArrayFile;
 	ifstream deptDataIn;
-	ifstream empDataIn; 
-
-
+	ifstream empDataIn;
+	int deptCount = 0, empCount = 0; 
 
 	cout << fixed << showpoint << setprecision(2); //set formatting for numeric output
 
@@ -145,16 +144,19 @@ int main()
 		{
 			switch(choice)
 			{
-				case 1: getDepartmentData(tDID, tDN, tDHN, deptCount);
+				case 1: getDepartmentData(tDID, tDN, tDHN, deptCount, deptIdNums);
 						myDeparts[deptCount](tDID, tDN, tDHN);
+						deptIdNums.push_back(tDID); 
 						deptCount ++;
 						break;
-				case 2: getEmployeeData(tID, tAge, tEDID, tSal, tName, empCount);
+				case 2: getEmployeeData(tID, tAge, tEDID, tSal, tName, empCount, empIdNums, deptIdNums);
 						// add employee to employee array
 						// if the line above doesn't create a new employee object in the array 
 						// at the specified location, try setEmpID(myEmploys[empCount]) - p576
 						// or myEmploys[empCount].setEmpID(tid)
 						myEmploys[empCount](tid, tAge, tEDID, tSal, tName);
+						empIdNums.push_back(tid);  
+						salaryData.push_back(tSal);
 						// increase count of employees in array
 						empCount ++;
 						break;
@@ -215,7 +217,7 @@ int getChoice()
 *						getEmployeeData									*
 *	This function gets data for an employee object.						*
 ************************************************************************/
-void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fName, int numb)
+void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fName, int numb, vector &fEmpIdNums, vector fDeptIdNums)
 {
 	bool Evalid = false, EDvalid = false;
 	fAge = 0;
@@ -223,9 +225,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 	fName = ""
 
 	if (numb > 6) 
-	{
 		cout << "The array is full, you can not add any more Employees.";
-	}
 	else 
 	{
 		// Get a valid Employee ID number
@@ -233,7 +233,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 		{
 			cout << "\nEnter the Employee's ID number: ";
 			cin >> fID;
-			checkEmployeeID(fID, Evalid);
+			checkEmployeeID(fID, Evalid, fEmpIdNums);
 		} 
 
 		// Get a valid employee age
@@ -250,7 +250,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 		{
 			cout << "\nEnter the employee's Department ID: ";
 			cin >> fEDID;
-			checkDepartmentID(fEDID, EDvalid);
+			checkDepartmentID(fEDID, EDvalid, fDeptIdNums);
 		}
 
 		// Get a valid salary
@@ -278,14 +278,14 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 *						checkEmployeeID									*
 *	This function makes sure employee ID's are unique					*
 ************************************************************************/
-bool checkEmployeeID(int &cID, bool &EID)
+bool checkEmployeeID(int &cID, bool &EID, vector empIDN)
 {
 	int numcID;
 	int local;
-	numcID = empIdNums.size();
+	numcID = empIDN.size();
 	for (int i = 0; i < numcID; i++)
 	{
-		local = empIdNums.at(i);
+		local = empIDN.at(i);
 		if (local == cID)
 			{
 				cout << "\nThat employee ID is already in use. Please try again.";
@@ -300,14 +300,14 @@ bool checkEmployeeID(int &cID, bool &EID)
 *						checkDepartmentID								*
 *	This function makes sure the Department ID exists.					*
 ************************************************************************/
-bool checkDepartmentID(int &cDID, bool &ED)
+bool checkDepartmentID(int &cDID, bool &ED, vector fDepIdNums)
 {
 	int numEID;
 	int local; 
-	numEID = deptIdNums.size();
+	numEID = fDepIdNums.size();
 	for (int i = 0; i < numEID; i++)
 	{
-		local = deptIdNums.at(i);
+		local = fDepIdNums.at(i);
 		if (local == cDID)
 			{
 				ED = true;
@@ -322,7 +322,7 @@ bool checkDepartmentID(int &cDID, bool &ED)
 *						getDepartmentData								*
 *	This function gets data for a department object.					*
 ************************************************************************/
-void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num)
+void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector fDeIdNums)
 {
 	bool EDvalid = false;
 	fDN = "";
@@ -338,7 +338,7 @@ void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num)
 		{
 			cout << "\nEnter the Department ID: ";
 			cin >> tDID;
-			checkDepartmentID(tDID, EDvalid);
+			checkDepartmentID(tDID, EDvalid, fDeIdNums);
 		}
 
 		// Get a valid Department name
