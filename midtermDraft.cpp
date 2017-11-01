@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 // Creates a Department class 
 class Department
 {	private:
@@ -33,10 +32,7 @@ class Department
 
 		// Mutator functions definitions - inline because they are shorter
 		void setDeptID(int iID)
-		{	
-			DepartmentID = iID;
-			
-		}
+		{	DepartmentID = iID;	}
 
 		void setDeptName(string iDeptName)
 		{	Departmentname = iDeptName; }
@@ -67,9 +63,6 @@ class Employee
 		Employee(int userEmpID, int userEmpAge, int userEmpDeptID, double userEmpSalary, string userEmpName)
 		{
 			setEmpID(userEmpID);	// Constants and variables
-	int choice, tID, tAge, tEDID, tDID, tDN;
-	double tSal; 
-
 			setEmpAge(userEmpAge);
 			setEmpDeptID(userEmpDeptID);
 			setEmpSal(userEmpSalary);
@@ -81,10 +74,7 @@ class Employee
 
 		// Mutator functions definitions - inline because they are shorter
 		void setEmpID(int iEID)
-		{	
-			employeeID = iEID
-			
-		}
+		{	employeeID = iEID;	}
 
 		void setEmpAge(int iEmpAge)
 		{	employeeAge = iEmpAge; }
@@ -109,7 +99,7 @@ bool checkEmployeeID(int&, bool&, vector);
 bool checkDepartmentID(int&, bool&, vector);
 void writeDeptAndEmpArraysToFile(Department, Employee, ofstream&, ofstream&, int, int);
 void readDeptAndEmpArraysFromFile(Department, Employee, ifstream&, ifstream&, string, string, int, int);
-
+void displayArraysAndSalaries(Department, Employee, int, int);
 
 
 int main()
@@ -122,9 +112,6 @@ int main()
 	vector<int> deptIdNums; // vector to hold all of the department ID's
 	// vector to hold all of the employee ID's & employee salaries
 	vector<int> empIdNums;
-	vector<int> salaryData;
-
-	int tDID, tID, tAge, tEDID;
 	double tSal;
 	string tName, tDN, tDHN, dDI, eDI;
 	ofstream deptArrayFile;
@@ -132,8 +119,7 @@ int main()
 	ifstream deptDataIn;
 	ifstream empDataIn;
 	int deptCount = 0, empCount = 0; 
-
-	cout << fixed << showpoint << setprecision(2); //set formatting for numeric output
+	int choice, tID, tAge, tEDID, tDID, tDN;
 
 	// Display menu items and get user selection	
 	do
@@ -156,7 +142,6 @@ int main()
 						// or myEmploys[empCount].setEmpID(tid)
 						myEmploys[empCount](tid, tAge, tEDID, tSal, tName);
 						empIdNums.push_back(tid);  
-						salaryData.push_back(tSal);
 						// increase count of employees in array
 						empCount ++;
 						break;
@@ -174,7 +159,7 @@ int main()
 						getline(cin, eDI);
 						readDeptAndEmpArraysFromFile(myDeparts, myEmploys, deptDataIn, empDataIn, dDI, eDI, NUM_EMPS, NUM_DEPT);
 						break;
-				case 5: // need to add this
+				case 5: displayArraysAndSalaries(myDeparts, myEmploys, empCount, deptCount);
 						break;	
 			}
 		}
@@ -421,6 +406,47 @@ void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstre
 	cout << "Done reading data from both files into the arrays.";
 }
 
+/************************************************************************
+*					displayArraysAndSalaries							*
+*	This function displays the arrays & salary by department.			*
+************************************************************************/
+void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps, int ndept)
+{
+	if (nemps == 0)
+		cout << "\nThe Employee Array is empty.";
+	else
+	{
+		cout << "\nHere is the content of the Employee Array";
+		for (int i = 0; i < nemps; i++)
+			{
+				cout << "\nEmployee Array item number " << i << endl;
+				cout << "Employee ID number: " << empArray[i].employeeID << endl;
+				cout << "Employee Age: " << empArray[i].employeeAge << endl;
+				cout << "Employee Department ID: " << empArray[i].employeeDepartmentID << endl;
+				cout << "Employee Salary: " << empArray[i].employeeSalary << endl;
+				cout << "Employee Name: " << empArray[i].employeeName << endl;
+			}
+	}
+	if (ndept == 0) 
+		cout << "\nThe Department Array is empty.";
+	else 
+	{
+		cout << "\nHere is the content of the Departments Array";
+		for (int i = 0; i < ndept; i++)
+			{
+				cout << "\nDepartment Array item number " << i << endl;
+				cout << "Department ID number: " << depArray[i].DepartmentID << endl;
+				cout << "Department Name: " << depArray[i].Departmentname << endl;
+				cout << "Department Head Name: " << depArray[i].DepartmentHeadName << endl;
+			}
+		i = 0;
+		double totalSal;
+		for (int i = 0; i < ndept; i++)
+			
+
+	}
+	
+}
 
 
 
