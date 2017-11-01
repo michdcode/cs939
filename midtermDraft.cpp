@@ -68,7 +68,12 @@ class Employee
 		} 
 		Employee(int userEmpID, int userEmpAge, int userEmpDeptID, double userEmpSalary, string userEmpName)
 		{
-			setEmpID(userEmpID);
+			setEmpID(userEmpID);	// Constants and variables
+	int deptCount = 0;
+	int empCount = 0;
+	int choice, tID, tAge, tEDID, tDID, tDN;
+	double tSal; 
+
 			setEmpAge(userEmpAge);
 			setEmpDeptID(userEmpDeptID);
 			setEmpSal(userEmpSalary);
@@ -109,6 +114,7 @@ void getDepartmentData(int&, string&, string&, int);
 bool checkEmployeeID(int&, bool&);
 bool checkDepartmentID(int&);
 void writeDeptAndEmpArraysToFile(Department, Employee, ofstream&, ofstream&, int, int);
+void readDeptAndEmpArraysFromFile(Department, Employee, ifstream&, ifstream&, string, string, int, int);
 
 
 
@@ -120,14 +126,11 @@ int main()
 	Employee myEmploys[NUM_EMPS];
 	Department myDeparts[NUM_DEPT];
 
-	// Constants and variables
-	int deptCount = 0;
-	int empCount = 0;
-	int choice, tID, tAge, tEDID, tDID, tDN;
-	double tSal; 
-	string tName, tDN, tDHN;
+	string tName, tDN, tDHN, dDI, eDI;
 	ofstream deptArrayFile;
-	ofstream empArrayFile; 
+	ofstream empArrayFile;
+	ifstream deptDataIn;
+	ifstream empDataIn; 
 
 
 
@@ -155,9 +158,19 @@ int main()
 						// increase count of employees in array
 						empCount ++;
 						break;
-				case 3: writeDeptAndEmpArraysToFile(myDeparts, myEmploys, deptArrayFile, empArrayFile&, deptCount, empCount);
+				case 3: writeDeptAndEmpArraysToFile(myDeparts, myEmploys, deptArrayFileFull, empArrayFileFull, deptCount, empCount);
 						break;
-				case 4: // need to add this
+				case 4: cout << "\nPlease enter the complete name of the file with the Employee data." << endl;
+						cout << "\nPlease make sure to enter the file extension. For example: " <<endl;
+						cout << "\nMyEmployeeData.txt -- Enter the file name: >";
+						// cin.get();
+						getline(cin, dDI);
+						cout << "\nPlease enter the complete name of the file with the Department data." << endl;
+						cout << "\nPlease make sure to enter the file extension. For example: " <<endl;
+						cout << "\nMyDepartmentData.txt -- Enter the file name: >";
+						// cin.get();
+						getline(cin, eDI);
+						readDeptAndEmpArraysFromFile(myDeparts, myEmploys, deptDataIn, empDataIn, dDI, eDI, NUM_EMPS, NUM_DEPT);
 						break;
 				case 5: // need to add this
 						break;	
@@ -375,7 +388,38 @@ void writeDeptAndEmpArraysToFile(Department fDeparts, Employee fEmploys, ofstrea
 		 << "\nThe name of the file is EmployeeArray.txt";
 }
 
-
+/************************************************************************
+*			readDeptAndEmpArraysFromFile								*
+*	This function reads data from two files into two arrays. 			*
+************************************************************************/
+void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstream &fDepFile, ifstream &fEmpFile, fEmpFileName, fDeptFileName, int fDcount, int fEcount)
+{
+	int count = 0;
+	//Read Department data from file into an array
+	cout << "\nFirst, read the Department information file into an array.";
+	fDepFile.open(fDeptFileName);
+	if (!fDepFile)
+		cout << "\nError opening data file.";
+	else 
+	{
+		while (count < fDcount && fDepFile >> fDeparts[count])
+			count ++;
+		fDepFile.close();
+	}
+	// Read Employee data from file into an array
+	count = 0;
+	cout << "\nNext, read the Employee information file into an array.";
+	fEmpFile.open(fEmpFileName);
+	if (!fEmpFile)
+		cout << "\nError opening data file.";
+	else 
+	{
+		while (count < fEcount && fEmpFile >> fEmploys[count])
+			count ++;
+		fEmpFile.close();
+	}
+	cout << "Done reading data from both files into the arrays.";
+}
 
 
 
