@@ -108,6 +108,7 @@ void getEmployeeData(int&, int&, int&, double&, string&);
 void getDepartmentData(int&, string&, string&, int);
 bool checkEmployeeID(int&, bool&);
 bool checkDepartmentID(int&);
+void writeDeptAndEmpArraysToFile(Department, Employee, ofstream&, ofstream&, int, int);
 
 
 
@@ -125,6 +126,10 @@ int main()
 	int choice, tID, tAge, tEDID, tDID, tDN;
 	double tSal; 
 	string tName, tDN, tDHN;
+	ofstream deptArrayFile;
+	ofstream empArrayFile; 
+
+
 
 	cout << fixed << showpoint << setprecision(2); //set formatting for numeric output
 
@@ -150,7 +155,7 @@ int main()
 						// increase count of employees in array
 						empCount ++;
 						break;
-				case 3: // need to add this
+				case 3: writeDeptAndEmpArraysToFile(myDeparts, myEmploys, deptArrayFile, empArrayFile&, deptCount, empCount);
 						break;
 				case 4: // need to add this
 						break;
@@ -345,7 +350,30 @@ void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num)
 	}
 }
 
+/************************************************************************
+*					writeDeptAndEmpArraysToFile							*
+*	This function writes each array to a separate File.					*
+************************************************************************/
+void writeDeptAndEmpArraysToFile(Department fDeparts, Employee fEmploys, ofstream &fDepArrFile, ofstream &fEmpArrFile, int fDcount, int fEcount)
+{
+	//Write Department Array to a file
+	cout << "\nFirst, save the Department array to a file.";
+	fDepArrFile.open("DepartmentArray.txt");
+	for (int i = 0; i < fDcount; i++)
+		fDepArrFile << fDeparts[i];
+	fDepArrFile.close();
+	cout << "\nThe Department array has been saved to a file."
+		 << "\nThe name of the file is DepartmentArray.txt";
 
+	//Write Employee Array to a file
+	cout << "\nNext, save the Employee array to a file.";
+	fEmpArrFile.open("EmployeeArray.txt");
+	for (int i = 0; i < fEcount; i++)
+		fEmpArrFile << fEmploys[i];
+	fEmpArrFile.close();
+	cout << "\nThe Employee array has been saved to a file."
+		 << "\nThe name of the file is EmployeeArray.txt";
+}
 
 
 
