@@ -43,7 +43,7 @@ class Department
 		void setDeptName(string iDeptName)
 		{	Departmentname = iDeptName; }
 
-		void setCost(string iDeptHead)
+		void setDeptHead(string iDeptHead)
 		{	DepartmentHeadName = iDeptHead; }
 
 };
@@ -52,7 +52,9 @@ class Department
 // Creates an Employee class
 class Employee
 {	private:
-		int employeeID, employeeAge employeeDepartmentID;
+		int employeeID;
+		int employeeAge;
+		int employeeDepartmentID;
 		double employeeSalary; 
 		string employeeName;
 
@@ -111,13 +113,13 @@ class Employee
 // function prototypes for main
 int getChoice();
 void displayMenu();
-void getEmployeeData(int&, int&, int&, double&, string&, int, vector&, vector);
-void getDepartmentData(int&, string&, string&, int, vector&);
-bool checkEmployeeID(int&, bool&, vector);
-bool checkDepartmentID(int&, bool&, vector);
-void writeDeptAndEmpArraysToFile(Department, Employee, ofstream&, ofstream&, int, int);
-void readDeptAndEmpArraysFromFile(Department, Employee, ifstream&, ifstream&, string, string, int, int);
-void displayArraysAndSalaries(Department, Employee, int, int);
+void getEmployeeData(int&, int&, int&, double&, string&, int, vector<int>&, vector<int>);
+void getDepartmentData(int&, string&, string&, int, vector<int>&);
+bool checkEmployeeID(int&, bool&, vector<int>);
+bool checkDepartmentID(int&, bool&, vector<int>);
+void writeDeptAndEmpArraysToFile(Department[], Employee[], ofstream&, ofstream&, int, int);
+void readDeptAndEmpArraysFromFile(Department[], Employee[], ifstream&, ifstream&, string, string, int, int);
+void displayArraysAndSalaries(Department[], Employee[], int, int);
 
 
 int main()
@@ -125,11 +127,10 @@ int main()
 	// Create two arrays, one for employee with size 7, and one for department with size 3
 	const int NUM_EMPS = 7;
 	const int NUM_DEPT = 3;
-	Employee myEmploys[NUM_EMPS];
-	Department myDeparts[NUM_DEPT];
+	Employee myEmploys[NUM_EMPS];// array is myEmploys with type employees objects
+	Department myDeparts[NUM_DEPT];// array is myDepartment with type department objects
 	vector<int> deptIdNums; // vector to hold all of the department ID's
-	// vector to hold all of the employee ID's & employee salaries
-	vector<int> empIdNums;
+	vector<int> empIdNums; // vector to hold all of the employee ID's
 	double tSal;
 	string tName, tDN, tDHN, dDI, eDI;
 	ofstream deptArrayFile;
@@ -137,7 +138,7 @@ int main()
 	ifstream deptDataIn;
 	ifstream empDataIn;
 	int deptCount = 0, empCount = 0; 
-	int choice, tID, tAge, tEDID, tDID, tDN;
+	int choice, tID, tAge, tEDID, tDID;
 
 	// Display menu items and get user selection	
 	do
@@ -149,21 +150,18 @@ int main()
 			switch(choice)
 			{
 				case 1: getDepartmentData(tDID, tDN, tDHN, deptCount, deptIdNums);
-						myDeparts[deptCount](tDID, tDN, tDHN);
-						deptIdNums.push_back(tDID); 
-						deptCount ++;
+						Department newestDepartment(tDID, tDN, tDHN); // create new department
+						myDeparts[deptCount] = newestDepartment; // add employee to array
+						deptIdNums.push_back(tDID); // add deptID to dept vector
+						deptCount ++; // increase employee count 
 						break;
 				case 2: getEmployeeData(tID, tAge, tEDID, tSal, tName, empCount, empIdNums, deptIdNums);
-						// add employee to employee array
-						// if the line above doesn't create a new employee object in the array 
-						// at the specified location, try setEmpID(myEmploys[empCount]) - p576
-						// or myEmploys[empCount].setEmpID(tid)
-						myEmploys[empCount](tid, tAge, tEDID, tSal, tName);
-						empIdNums.push_back(tid);  
-						// increase count of employees in array
-						empCount ++;
+						Employee newestEmployee(tID, tAge, tEDID, tSal, tName);
+						myEmploys[empCount] = newestEmployee;
+						empIdNums.push_back(tID);  
+						empCount ++;// increase count of employees in array
 						break;
-				case 3: writeDeptAndEmpArraysToFile(myDeparts, myEmploys, deptArrayFileFull, empArrayFileFull, deptCount, empCount);
+				case 3: writeDeptAndEmpArraysToFile(myDeparts, myEmploys, deptArrayFile, empArrayFile, deptCount, empCount);
 						break;
 				case 4: cout << "\nPlease enter the complete name of the file with the Employee data." << endl;
 						cout << "\nPlease make sure to enter the file extension. For example: " <<endl;
@@ -220,12 +218,12 @@ int getChoice()
 *						getEmployeeData									*
 *	This function gets data for an employee object.						*
 ************************************************************************/
-void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fName, int numb, vector &fEmpIdNums, vector fDeptIdNums)
+void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fName, int numb, vector<int> &fEmpIdNums, vector <int> fDeptIdNums)
 {
 	bool Evalid = false, EDvalid = false;
 	fAge = 0;
 	fSal = 0; 
-	fName = ""
+	fName = "";
 
 	if (numb > 6) 
 		cout << "The array is full, you can not add any more Employees.";
@@ -259,7 +257,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 		// Get a valid salary
 		while (fSal == 0)
 		{
-			cout >> "\nEnter the employee's salary: $ "; 
+			cout << "\nEnter the employee's salary: $ "; 
 			cin >> fSal;
 			if (fSal == 0)
 				cout << "\nThe salary cannot be 0.";
@@ -268,10 +266,10 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 		// Get a valid name
 		while (fName == "")
 		{
-			cout >> "\nEnter the employee's name: ";
+			cout << "\nEnter the employee's name: ";
 			cin.get();
 			getline(cin, fName);
-			if (tName == "") 
+			if (fName == "") 
 				cout << "\nThe name cannot contain an empty string.";
 		}
 	}
@@ -281,7 +279,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 *						checkEmployeeID									*
 *	This function makes sure employee ID's are unique					*
 ************************************************************************/
-bool checkEmployeeID(int &cID, bool &EID, vector empIDN)
+bool checkEmployeeID(int &cID, bool &EID, vector<int> empIDN)
 {
 	int numcID;
 	int local;
@@ -303,7 +301,7 @@ bool checkEmployeeID(int &cID, bool &EID, vector empIDN)
 *						checkDepartmentID								*
 *	This function makes sure the Department ID exists.					*
 ************************************************************************/
-bool checkDepartmentID(int &cDID, bool &ED, vector fDepIdNums)
+bool checkDepartmentID(int &cDID, bool &ED, vector<int> fDepIdNums)
 {
 	int numEID;
 	int local; 
@@ -325,7 +323,7 @@ bool checkDepartmentID(int &cDID, bool &ED, vector fDepIdNums)
 *						getDepartmentData								*
 *	This function gets data for a department object.					*
 ************************************************************************/
-void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector fDeIdNums)
+void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector<int> fDeIdNums)
 {
 	bool EDvalid = false;
 	fDN = "";
@@ -340,14 +338,14 @@ void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector fDe
 		while (EDvalid == false)
 		{
 			cout << "\nEnter the Department ID: ";
-			cin >> tDID;
-			checkDepartmentID(tDID, EDvalid, fDeIdNums);
+			cin >> fDID;
+			checkDepartmentID(fDID, EDvalid, fDeIdNums);
 		}
 
 		// Get a valid Department name
 		while (fDN == "")
 		{
-			cout >> "\nEnter the Department name: ";
+			cout << "\nEnter the Department name: ";
 			cin.get();
 			getline(cin, fDN);
 			if (fDN == "") 
@@ -357,7 +355,7 @@ void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector fDe
 		// Get a valid Department head name
 		while (fDHN == "")
 		{
-			cout >> "\nEnter the Department head's name: ";
+			cout << "\nEnter the Department head's name: ";
 			cin.get();
 			getline(cin, fDHN);
 			if (fDHN == "") 
@@ -370,13 +368,13 @@ void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num, vector fDe
 *					writeDeptAndEmpArraysToFile							*
 *	This function writes each array to a separate File.					*
 ************************************************************************/
-void writeDeptAndEmpArraysToFile(Department fDeparts, Employee fEmploys, ofstream &fDepArrFile, ofstream &fEmpArrFile, int fDcount, int fEcount)
+void writeDeptAndEmpArraysToFile(fDeparts[], fEmploys[], ofstream &fDepArrFile, ofstream &fEmpArrFile, int fDcount, int fEcount)
 {
 	//Write Department Array to a file
 	cout << "\nFirst, save the Department array to a file.";
 	fDepArrFile.open("DepartmentArray.txt");
 	for (int i = 0; i < fDcount; i++)
-		fDepArrFile << fDeparts[i];
+		fDepArrFile << fDeparts[i]; //fDeparts is an int? 
 	fDepArrFile.close();
 	cout << "\nThe Department array has been saved to a file."
 		 << "\nThe name of the file is DepartmentArray.txt";
@@ -395,7 +393,7 @@ void writeDeptAndEmpArraysToFile(Department fDeparts, Employee fEmploys, ofstrea
 *			readDeptAndEmpArraysFromFile								*
 *	This function reads data from two files into two arrays. 			*
 ************************************************************************/
-void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstream &fDepFile, ifstream &fEmpFile, fEmpFileName, fDeptFileName, int fDcount, int fEcount)
+void readDeptAndEmpArraysFromFile(fDeparts[], fEmploys[], ifstream &fDepFile, ifstream &fEmpFile, string fEmpFileName, string fDeptFileName, int fDcount, int fEcount)
 {
 	int count = 0;
 	//Read Department data from file into an array
@@ -407,7 +405,7 @@ void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstre
 	{
 		while (count < fDcount && fDepFile >> fDeparts[count])
 			count ++;
-		fDepFile.close();
+		fDepFile.close(fDeptFileName);
 	}
 	// Read Employee data from file into an array
 	count = 0;
@@ -419,7 +417,7 @@ void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstre
 	{
 		while (count < fEcount && fEmpFile >> fEmploys[count])
 			count ++;
-		fEmpFile.close();
+		fEmpFile.close(fEmpFileName);
 	}
 	cout << "Done reading data from both files into the arrays.";
 }
@@ -428,10 +426,10 @@ void readDeptAndEmpArraysFromFile(Department fDeparts, Employee fEmploys, ifstre
 *					displayArraysAndSalaries							*
 *	This function displays the arrays & salary by department.			*
 ************************************************************************/
-void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps, int ndept)
+void displayArraysAndSalaries(depArray[], empArray[], int nemps, int ndept)
 {
 	// initialize a few variables
-	int dept1 = -1, dept2 = -1, dept3 = -1, j = 1;
+	int dept1 = -1, dept2 = -1, dept3 = -1, j = 1, i;
 	double sal1 = 0.0, sal2 = 0.0, sal3 = 0.0;
 	const int PAIRS = 7;
 	double deptSalaryPairs[PAIRS][PAIRS];
@@ -442,7 +440,7 @@ void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps,
 	else
 	{
 		cout << "\nHere is the content of the Employee Array";
-		for (int i = 0; i < nemps; i++)
+		for (i = 0; i < nemps; i++)
 			{
 				cout << "\nEmployee Array item number " << i << endl;
 				cout << "Employee ID number: " << empArray[i].getEmpID() << endl;
@@ -469,15 +467,15 @@ void displayArraysAndSalaries(Department depArray, Employee empArray, int nemps,
 	// Gather department information
 	for (i = 0; i < ndept; i++)
 		{
-			dept[j] = depArray[i].getDepartmentID; 
-			j++
+			deptArray[j] = depArray[i].getDepartmentID; //set variable dept1 = first department ID number
+			j++;
 		}
 	// Put employee department and salary into pairs
 	j = 0; 
 	for (i = 0; i < nemps; i++)
 		{
 			deptSalaryPairs[i][j] = empArray[i].getEmployeeDepartmentID();
-			deptSalaryPairs[i][j + 1] = empArray[i]getEmployeeSalary();
+			deptSalaryPairs[i][j + 1] = empArray[i].getEmployeeSalary();
 			j++; 
 		}
 	// Loop through employee array pairs, and total salaries by department
