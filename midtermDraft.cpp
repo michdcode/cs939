@@ -124,7 +124,7 @@ int main()
 	int empCount = 0;
 	int choice, tID, tAge, tEDID, tDID, tDN;
 	double tSal; 
-	string tName, tDHN, tDHN;
+	string tName, tDN, tDHN;
 
 	cout << fixed << showpoint << setprecision(2); //set formatting for numeric output
 
@@ -138,6 +138,8 @@ int main()
 			switch(choice)
 			{
 				case 1: getDepartmentData(tDID, tDN, tDHN, deptCount);
+						myDeparts[deptCount](tDID, tDN, tDHN);
+						deptCount ++;
 						break;
 				case 2: getEmployeeData(tID, tAge, tEDID, tSal, tName, empCount);
 						// add employee to employee array
@@ -243,7 +245,7 @@ void getEmployeeData(int &fID, int &fAge, int &fEDID, double &fSal, string &fNam
 		}
 		
 		// Get a valid name
-		while (fName = "")
+		while (fName == "")
 		{
 			cout >> "\nEnter the employee's name: ";
 			cin.get();
@@ -302,9 +304,11 @@ bool checkDepartmentID(int &cDID, bool &ED)
 *						getDepartmentData								*
 *	This function gets data for a department object.					*
 ************************************************************************/
-void getDepartmentData(int &tDID, string &tDN, string &tDHN, int num)
+void getDepartmentData(int &fDID, string &fDN, string &fDHN, int num)
 {
 	bool EDvalid = false;
+	fDN = "";
+	fDHN = "";
 	if (num > 3) 
 	{
 		cout << "The array is full, you can not add any more Departments.";
@@ -314,30 +318,32 @@ void getDepartmentData(int &tDID, string &tDN, string &tDHN, int num)
 		// Get a valid Department ID		
 		while (EDvalid == false)
 		{
-			cout << "\nEnter the employee's Department ID: ";
+			cout << "\nEnter the Department ID: ";
 			cin >> tDID;
-			checkDepartmentID(EDID, EDvalid);
+			checkDepartmentID(tDID, EDvalid);
 		}
 
-		// Get a valid 
-		while (tSal == 0)
+		// Get a valid Department name
+		while (fDN == "")
 		{
-			cout >> "\nEnter the employee's salary: $ "; 
-			cin >> tSal;
-			if (tSal == 0)
-				cout << "\nThe salary cannot be 0.";
-		}
-		
-		// Get a valid name
-		while (tName = "")
-		{
-			cout >> "\nEnter the employee's name: ";
+			cout >> "\nEnter the Department name: ";
 			cin.get();
-			getline(cin, tName);
-			if (tName == "") 
+			getline(cin, fDN);
+			if (fDN == "") 
 				cout << "\nThe name cannot contain an empty string.";
 		}
 
+		// Get a valid Department head name
+		while (fDHN == "")
+		{
+			cout >> "\nEnter the Department head's name: ";
+			cin.get();
+			getline(cin, fDHN);
+			if (fDHN == "") 
+				cout << "\nThe Department head's name cannot contain an empty string.";
+		}
+	}
+}
 
 
 
